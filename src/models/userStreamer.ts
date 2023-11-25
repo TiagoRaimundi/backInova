@@ -14,7 +14,7 @@ interface UserStreamer {
         city: string;
         state: string;
         country: string;
-        zip: string;
+        cep: string;
     }
     paymentMethods: {
         cardType: string;
@@ -65,7 +65,7 @@ const userSchema = new Schema<UserStreamer>({
         city: { type: String, required: true },
         state: { type: String, required: true },
         country: { type: String, required: true },
-        zip: { type: String, required: true }
+        cep: { type: String, required: true }
     },
     profilePicture: {
         type: Object,
@@ -103,7 +103,7 @@ const userSchema = new Schema<UserStreamer>({
     },
     liveToken: {
         type: String,
-        required: true
+        required: false
     },
     myProducts: [{
         type: Schema.Types.ObjectId,
