@@ -3,9 +3,10 @@ import userStreamer from '#/models/userStreamer'
 
 
 import { Router } from 'express'
+import { CreateUserStreamer, CreateUserViewer } from '#/@types/user'
 
 const router = Router()
-router.post('/createViewerUser', async (req, res) => {
+router.post('/createViewerUser', async (req: CreateUserViewer, res) => {
     const { email, password, name } = req.body
     //const newUserViewer = new userViewer({ email, password, name })
     //newUserViewer.save()
@@ -13,7 +14,7 @@ router.post('/createViewerUser', async (req, res) => {
     res.json({ userviewer })
 })
 
-router.post('/createStreamerUser', async (req, res) => {
+router.post('/createStreamerUser', async (req: CreateUserStreamer, res) => {
     const { email, password, name, cpf, phoneNumber, address } = req.body
     //const newUserViewer = new userViewer ({email, password, name})
     //newUserViewer.save()
