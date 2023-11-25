@@ -2,12 +2,12 @@
 
 import { Model, ObjectId, Schema, model } from "mongoose"
 
-interface UserViewer {
+interface UserStreamer {
     name: string
     email: string
     password: string
     verified: boolean
-    profilePicture?: {url: string; publiId: string}
+    profilePicture?: { url: string; publiId: string }
 
     address: {
         street: string;
@@ -35,19 +35,19 @@ interface UserViewer {
 }
 
 
-const userSchema = new Schema<UserViewer>({
-    name:{
+const userSchema = new Schema<UserStreamer>({
+    name: {
         type: String,
         required: true,
         trim: true
     },
-    email:{
+    email: {
         type: String,
         required: true,
         trim: true,
         unique: true
     },
-    password:{
+    password: {
         type: String,
         required: true,
     },
@@ -61,12 +61,11 @@ const userSchema = new Schema<UserViewer>({
         ref: "Product"
     }],
     address: {
-        street: String,
-        city: String,
-        state: String,
-        country: String,
-        zip: String,
-        required: true
+        street: { type: String, required: true },
+        city: { type: String, required: true },
+        state: { type: String, required: true },
+        country: { type: String, required: true },
+        zip: { type: String, required: true }
     },
     profilePicture: {
         type: Object,
@@ -112,6 +111,6 @@ const userSchema = new Schema<UserViewer>({
     }]
 
 
-}, {timestamps: true})
+}, { timestamps: true })
 
-export default model("User", userSchema) as Model<UserViewer>
+export default model("User", userSchema) as Model<UserStreamer>

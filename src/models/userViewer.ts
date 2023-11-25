@@ -2,7 +2,7 @@
 
 import { Model, ObjectId, Schema, model } from "mongoose"
 
-interface UserViewer {
+interface UserViewerDocument {
     name: string
     email: string
     password: string
@@ -14,7 +14,7 @@ interface UserViewer {
         city: string;
         state: string;
         country: string;
-        zip: string;
+       
     }
     paymentMethods: {
         cardType: string;
@@ -31,7 +31,7 @@ interface UserViewer {
 }
 
 
-const userSchema = new Schema<UserViewer>({
+const userViewerSchema = new Schema<UserViewerDocument>({
     name:{
         type: String,
         required: true,
@@ -57,12 +57,11 @@ const userSchema = new Schema<UserViewer>({
         ref: "Product"
     }],
     address: {
-        street: String,
-        city: String,
-        state: String,
-        country: String,
-        zip: String,
-        required: true
+        street: { type: String, required: false },
+        city: { type: String, required: false },
+        state: { type: String, required: false },
+        country: { type: String, required: false },
+       
     },
     profilePicture: {
         type: Object,
@@ -81,16 +80,16 @@ const userSchema = new Schema<UserViewer>({
 
     followers: [{
         type: Schema.Types.ObjectId,
-        ref: "User"
+        ref: "UserViewer"
     }],
 
     followings: [{
         type: Schema.Types.ObjectId,
-        ref: "User"
+        ref: "UserViewer"
     }],
     tokens: [String]
 
 
 }, {timestamps: true})
 
-export default model("User", userSchema) as Model<UserViewer>
+export default model("UserViewer", userViewerSchema) as Model<UserViewerDocument>
