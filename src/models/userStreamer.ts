@@ -61,7 +61,7 @@ const userSchema = new Schema<UserStreamer>({
         ref: "Product"
     }],
     address: {
-        street: { type: String, required: true },
+        street: { type: String, required: true},
         city: { type: String, required: true },
         state: { type: String, required: true },
         country: { type: String, required: true },
@@ -84,12 +84,12 @@ const userSchema = new Schema<UserStreamer>({
 
     followers: [{
         type: Schema.Types.ObjectId,
-        ref: "User"
+        ref: "UserStreamer"
     }],
 
     followings: [{
         type: Schema.Types.ObjectId,
-        ref: "User"
+        ref: "UserStreamer"
     }],
     tokens: [String],
     cpf: {
@@ -99,7 +99,8 @@ const userSchema = new Schema<UserStreamer>({
     },
     phoneNumber: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     liveToken: {
         type: String,
@@ -113,4 +114,4 @@ const userSchema = new Schema<UserStreamer>({
 
 }, { timestamps: true })
 
-export default model("User", userSchema) as Model<UserStreamer>
+export default model("UserStreamer", userSchema) as Model<UserStreamer>

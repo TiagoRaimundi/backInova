@@ -9,13 +9,7 @@ interface UserViewerDocument {
     verified: boolean
     profilePicture?: {url: string; publiId: string}
 
-    address: {
-        street: string;
-        city: string;
-        state: string;
-        country: string;
-       
-    }
+
     paymentMethods: {
         cardType: string;
         lastFourDigits: number;
@@ -50,19 +44,14 @@ const userViewerSchema = new Schema<UserViewerDocument>({
     paymentMethods: [{
         cardType: String,
         lastFourDigits: Number,
-        expirationDate: Date
+        expirationDate: Date,
+   
     }],
     cart: [{
         type: Schema.Types.ObjectId,
         ref: "Product"
     }],
-    address: {
-        street: { type: String, required: false },
-        city: { type: String, required: false },
-        state: { type: String, required: false },
-        country: { type: String, required: false },
-       
-    },
+
     profilePicture: {
         type: Object,
         url: String,

@@ -3,7 +3,7 @@ import userStreamer from '#/models/userStreamer'
 import { Router } from 'express'
 import { CreateUserStreamer, CreateUserViewer } from '#/@types/user'
 import { validate } from '#/middleware/validator'
-import { CreateUserViewerSchema } from '#/utils/validationSchema'
+import { CreateUserStreamerSchema, CreateUserViewerSchema } from '#/utils/validationSchema'
 
 const router = Router()
 router.post(
@@ -16,33 +16,31 @@ router.post(
 
         })
 
-        const user = await userViewer.create({name, email, password})
-        res.json({user})
+        const userviwer = await userViewer.create({name, email, password})
+        res.json({userviwer})
+
+    }
+
+)
+router.post(
+    "/createStreamerUser",
+    validate(CreateUserStreamerSchema),
+    async (req: CreateUserStreamer, res) => {
+        const {email, password, name, cpf, phoneNumber, address } = req.body
+        CreateUserStreamerSchema.validate({email, password, name, cpf, phoneNumber, address}).catch(error => {
+
+        })
+
+        const userstreamer = await userStreamer.create({name, email, password, cpf, phoneNumber, address})
+        res.json({userstreamer})
 
     }
 
 )
 
-router.post(
-    '/createStreamerUser',
-    (req, res, next) => {
 
-        const { email, password, name } = req.body
-        if (!name.trim()) return res.json({ error: "Name is missing!" })
-        if (name.length < 3) return res.json({ error: 'Invalid name!' })
-        
 
-        next()
 
-    },
-    
-    async (req: CreateUserStreamer, res) => {
-    const { email, password, name, cpf, phoneNumber, address } = req.body
-    //const newUserViewer = new userViewer ({email, password, name})
-    //newUserViewer.save()
-    const userstreamer = await userStreamer.create({ email, password, name, cpf, phoneNumber, address })
-    res.json({ userstreamer })
-})
 
 
 export default router
