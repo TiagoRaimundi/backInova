@@ -5,6 +5,7 @@ import userViewer from "#/models/userViewer"
 import { CreateUserStreamerSchema, CreateUserViewerSchema } from "#/utils/validationSchema"
 import { RequestHandler } from "express"
 import { GOOGLE_USER, GOOGLE_PASS } from "#/utils/variables"
+import { generateToken } from "#/utils/helpers"
 
 export const createViewerUser: RequestHandler = async (req: CreateUserViewer, res) => {
     const { email, password, name } = req.body
@@ -13,7 +14,7 @@ export const createViewerUser: RequestHandler = async (req: CreateUserViewer, re
     })
 
     const userviwer = await userViewer.create({ name, email, password })
-
+    const token = generateToken()
     //send verification email
 
     const transport = nodemailer.createTransport({
