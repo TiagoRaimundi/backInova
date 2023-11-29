@@ -6,6 +6,7 @@ import { CreateUserStreamerSchema, CreateUserViewerSchema } from "#/utils/valida
 import { RequestHandler } from "express"
 import { GOOGLE_USER, GOOGLE_PASS } from "#/utils/variables"
 import { generateToken } from "#/utils/helpers"
+import emailVerificationToken from "#/models/emailVerificationToken"
 
 export const createViewerUser: RequestHandler = async (req: CreateUserViewer, res) => {
     const { email, password, name } = req.body
@@ -14,9 +15,15 @@ export const createViewerUser: RequestHandler = async (req: CreateUserViewer, re
     })
 
     const userviwer = await userViewer.create({ name, email, password })
-    const token = generateToken()
-    //send verification email
 
+
+    const token = generateToken()
+    const verificationToken = await emailVerificationToken.create({
+        owner: userviwer._id,
+        token
+
+    })
+    //send verification email
     const transport = nodemailer.createTransport({
         service: 'gmail', 
         auth: {
@@ -28,7 +35,7 @@ export const createViewerUser: RequestHandler = async (req: CreateUserViewer, re
       transport.sendMail({
         to: userviwer.email,
         from: "auth@yapp.com",
-        html: "<h1>123445</h1>"
+        html: `<h1>Your verification token is ${token}</h1>`
       })
     res.status(201).json({ userviwer })
 
@@ -43,6 +50,14 @@ export const createStreamerUser: RequestHandler = async (req: CreateUserStreamer
 
     const userstreamer = await userStreamer.create({ name, email, password, cpf, phoneNumber, address })
 
+        
+    const token = generateToken()
+    const verificationToken = await emailVerificationToken.create({
+        owner: userstreamer._id,
+        token
+
+    })
+
     //send verification email
     const transport = nodemailer.createTransport({
         service: 'gmail',
@@ -55,7 +70,7 @@ export const createStreamerUser: RequestHandler = async (req: CreateUserStreamer
       transport.sendMail({
         to: userstreamer.email,
         from: "auth@yapp.com",
-        html: "<h1>123445</h1>"
+        html: `<h1>Your verification token is ${token}</h1>`
       })
     res.status(201).json({ userstreamer })
 
