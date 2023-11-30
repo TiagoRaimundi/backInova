@@ -78,7 +78,6 @@ const userViewerSchema = new Schema<UserViewerDocument>({
     }],
     tokens: [String]
 
-
 }, {timestamps: true})
 
 export default model("UserViewer", userViewerSchema) as Model<UserViewerDocument>
