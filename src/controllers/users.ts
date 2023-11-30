@@ -18,7 +18,7 @@ export const createViewerUser: RequestHandler = async (req: CreateUserViewer, re
 
 
     const token = generateToken()
-    const verificationToken = await emailVerificationToken.create({
+    await emailVerificationToken.create({
         owner: userviwer._id,
         token
 
@@ -52,7 +52,7 @@ export const createStreamerUser: RequestHandler = async (req: CreateUserStreamer
 
         
     const token = generateToken()
-    const verificationToken = await emailVerificationToken.create({
+    await emailVerificationToken.create({
         owner: userstreamer._id,
         token
 
