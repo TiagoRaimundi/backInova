@@ -1,3 +1,4 @@
+import { isValidObjectId } from 'mongoose';
 import * as yup from 'yup'
 
 const CPF_REGEX = /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/;
@@ -55,4 +56,16 @@ export const CreateUserStreamerSchema = yup.object().shape({
     
 
 
+})
+
+export const EmailVerificationBody = yup.object().shape({
+    token: yup.string().trim(). required("Invalid token!"),
+    userId: yup.string().transform(function(value){
+        if(this.isType(value) && isValidObjectId(value)){
+            return value
+        }else{
+            return ""
+        }
+    })
+    .required("Invalid userId!"),
 })
