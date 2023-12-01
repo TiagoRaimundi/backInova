@@ -1,5 +1,6 @@
 //interface (typescript)
 
+import { compare, hash } from "bcrypt"
 import { Model, ObjectId, Schema, model } from "mongoose"
 
 interface UserViewerDocument {
@@ -24,8 +25,10 @@ interface UserViewerDocument {
     bio?: string;
 }
 
-
-const userViewerSchema = new Schema<UserViewerDocument>({
+interface Methods {
+    comparePassword(password: string): Promise<boolean>
+}
+const userViewerSchema = new Schema<UserViewerDocument, {}, Methods>({
     name:{
         type: String,
         required: true,
@@ -80,4 +83,18 @@ const userViewerSchema = new Schema<UserViewerDocument>({
 
 }, {timestamps: true})
 
-export default model("UserViewer", userViewerSchema) as Model<UserViewerDocument>
+userViewerSchema.pre("save", async function(next){
+    if(this.isModified("password")){
+        this.password = await hash(this.password, 10)
+
+    }
+    next()
+})
+
+userViewerSchema.methods.comparePassword = async function (password){
+    const result = await compare(password, this.password)
+    return result
+
+}
+
+export default model("UserViewer", userViewerSchema) as Model<UserViewerDocument, {}, Methods>
