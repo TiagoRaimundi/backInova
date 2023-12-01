@@ -24,22 +24,23 @@ interface Profile {
     userViewerId: string
 }
 
-export const sendVerificationMail = async (token: string, profile: Profile) => {
+export const sendVerificationMailuserViewer = async (token: string, profile: Profile) => {
     const transport = generateMailTransporter()
     const {name, email, userViewerId} = profile
     await emailVerificationToken.create({
         owner: userViewerId,
         token
     })
-    const welcomeMessage = `Bem-vindo ${name}! 🛍️ Prepare-se para uma experiência de compra inesquecível, onde incríveis lives de compras esperam por você. Descubra produtos únicos, interaja em tempo real e aproveite ofertas exclusivas. Feliz compras e diversão!"`
+
+    const welcomeMessageViewerUser = `Bem-vindo ${name}! 🛍️ Prepare-se para uma experiência de compra inesquecível, onde incríveis lives de compras esperam por você. Descubra produtos únicos, interaja em tempo real e aproveite ofertas exclusivas. Feliz compras e diversão!"`
 
     transport.sendMail({
         to: email,
         from: VERIFICATION_EMAIL,
-        subject: welcomeMessage,
+        subject: welcomeMessageViewerUser,
         html: generateTemplate({
-            title: "Welcome to Podify",
-            message: welcomeMessage,
+            title: "Divirta-se",
+            message: welcomeMessageViewerUser,
             logo: "cid:logo",
             banner: "cid:welcome",
             link: "#",
@@ -61,4 +62,47 @@ export const sendVerificationMail = async (token: string, profile: Profile) => {
 
 }
 
+interface ProfileStreamer {
+    name: string
+    email: string
+    userStreamerId: string
+}
+
+export const sendVerificationMailuserStreamer = async (token: string, profile: ProfileStreamer) => {
+    const transport = generateMailTransporter()
+    const {name, email, userStreamerId} = profile
+    await emailVerificationToken.create({
+        owner: userStreamerId,
+        token
+    })
+
+    const welcomeMessageStreamerUser = `${name} 🛍️ Prepare-se para uma experiência de vendas inesquecível, onde incríveis lives de compras e vendas esperam por você. Venda seus produtos de forma mais organizada e diversificada, interaja em tempo real com seus clientes. Tenha ótimas vendas!"`
+
+    transport.sendMail({
+        to: email,
+        from: VERIFICATION_EMAIL,
+        subject: welcomeMessageStreamerUser,
+        html: generateTemplate({
+            title: "Divirta-se",
+            message: welcomeMessageStreamerUser,
+            logo: "cid:logo",
+            banner: "cid:welcome",
+            link: "#",
+            btnTitle: token
+        }),
+        attachments: [
+            {
+                filename: "logo.png",
+                path: path.join(__dirname, "../mail/logo.png"),
+                cid: "logo"
+            },
+            {
+                filename: "welcome.png",
+                path: path.join(__dirname, "../mail/welcome.png"),
+                cid: "welcome"
+            }
+        ]
+    })
+
+}
 
