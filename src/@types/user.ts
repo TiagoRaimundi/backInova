@@ -5,6 +5,7 @@ export interface CreateUserViewer extends Request{
         name: string
         email: string
         password: string
+        userType: "viewer"
     }
 }
 
@@ -16,6 +17,16 @@ export interface CreateUserStreamer extends Request{
         cpf: string
         phoneNumber: string
         address: string
+        
 
+    }
+}
+
+export interface VerifyEmailRequest extends Request {
+    body: {
+        userId: string
+        token: string
+      
+        
     }
 }

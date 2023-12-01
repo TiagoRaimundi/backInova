@@ -3,7 +3,7 @@ import userStreamer from '#/models/userStreamer'
 import { Router } from 'express'
 import { validate } from '#/middleware/validator'
 import { CreateUserStreamerSchema, CreateUserViewerSchema } from '#/utils/validationSchema'
-import { createStreamerUser, createViewerUser } from '#/controllers/users'
+import { createStreamerUser, createViewerUser, verifyEmail } from '#/controllers/users'
 
 const router = Router()
 router.post(
@@ -17,6 +17,7 @@ router.post(
     validate(CreateUserStreamerSchema), createStreamerUser
 )
 
+router.post("/verify-email", verifyEmail)
 
 
 
