@@ -75,7 +75,7 @@ export const sendVerificationMailuserStreamer = async (token: string, profile: P
         owner: userStreamerId,
         token
     })
-
+  
     const welcomeMessageStreamerUser = `${name} 🛍️ Prepare-se para uma experiência de vendas inesquecível, onde incríveis lives de compras e vendas esperam por você. Venda seus produtos de forma mais organizada e diversificada, interaja em tempo real com seus clientes. Tenha ótimas vendas!"`
 
     transport.sendMail({

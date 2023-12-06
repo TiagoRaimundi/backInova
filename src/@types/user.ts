@@ -22,9 +22,18 @@ export interface CreateUserStreamer extends Request{
     }
 }
 
-export interface VerifyEmailRequest extends Request {
+export interface VerifyViewerEmailRequest extends Request {
     body: {
-        userId: string
+        userViewerId: string
+        token: string
+      
+        
+    }
+}
+
+export interface VerifyStreamerEmailRequest extends Request {
+    body: {
+        userStreamerId: string
         token: string
       
         
