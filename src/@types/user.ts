@@ -17,6 +17,7 @@ export interface CreateUserStreamer extends Request{
         cpf: string
         phoneNumber: string
         address: string
+        userType: "streamer"
         
 
     }

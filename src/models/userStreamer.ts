@@ -9,6 +9,7 @@ interface UserStreamer {
     password: string
     verified: boolean
     profilePicture?: { url: string; publiId: string }
+    userType: string
 
     address: {
         street: string;
@@ -56,6 +57,12 @@ const userStreamerSchema = new Schema<UserStreamer,{}, Methods>({
         type: String,
         required: true,
     },
+    userType:{
+        type: String,
+        required: false,
+
+    },
+
     paymentMethods: [{
         cardType: String,
         lastFourDigits: Number,

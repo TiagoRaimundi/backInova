@@ -7,6 +7,7 @@ import nodemailer from 'nodemailer'
 
 
 
+
 const generateMailTransporter = () => {
     const transport = nodemailer.createTransport({
         service: 'gmail',
@@ -104,5 +105,45 @@ export const sendVerificationMailuserStreamer = async (token: string, profile: P
         ]
     })
 
+}
+
+interface Options {
+    email: string
+    link: string
+}
+
+export const sendForgetPasswordLink = async (options: Options) => {
+    const transport = generateMailTransporter()
+    
+    const { email, link} = options
+
+    
+      const message = "We just received a request that you forgot your password. No problem you can use the link below and create brand new password."
+      transport.sendMail({
+
+        to: email,
+        from: VERIFICATION_EMAIL,
+        subject: "Reset Password Link",
+        html: generateTemplate({
+            title: "Forget Password",
+            message,
+            logo:"cid:logo",
+            banner: "cid:forget_password",
+            link, 
+            btnTitle: "Reset Password",
+        }),
+        attachments: [
+            {
+                filename: "logo.png",
+                path: path.join(__dirname, "../mail/logo.png"),
+                cid: "logo"
+            },
+            {
+                filename: "forget_password.png",
+                path: path.join(__dirname, "../mail/welcome.png"),
+                cid: "forget_password"
+            }
+        ]
+      })
 }
 

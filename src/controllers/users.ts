@@ -5,13 +5,15 @@ import path from 'path'
 import userViewer from "#/models/userViewer"
 import { CreateUserStreamerSchema, CreateUserViewerSchema } from "#/utils/validationSchema"
 import { RequestHandler } from "express"
-import { GOOGLE_USER, GOOGLE_PASS } from "#/utils/variables"
+import { GOOGLE_USER, GOOGLE_PASS, PASSWORD_RESET_LINK } from "#/utils/variables"
 import { generateToken } from "#/utils/helpers"
 import EmailVerificationToken from "#/models/emailVerificationToken"
 import { generateTemplate } from "#/mail/template"
-import { sendVerificationMailuserStreamer, sendVerificationMailuserViewer } from "#/utils/mail"
+import { sendForgetPasswordLink, sendVerificationMailuserStreamer, sendVerificationMailuserViewer } from "#/utils/mail"
 import { isValidObjectId } from "mongoose"
 import emailVerificationToken from "#/models/emailVerificationToken"
+import crypto from 'crypto'
+import passwordResetToken from "#/models/passwordResetToken"
 
 export const createViewerUser: RequestHandler = async (req: CreateUserViewer, res) => {
     const { email, password, name } = req.body
@@ -21,7 +23,7 @@ export const createViewerUser: RequestHandler = async (req: CreateUserViewer, re
     const token = generateToken()
     sendVerificationMailuserViewer(token, {name, email, userViewerId:userviwer._id.toString()})
     //send verification email
-    res.status(201).json({ userviwer: userviwer._id, name, email })
+    res.status(201).json({ userviewer: userviwer._id, name, email })
 }
 
 export const createStreamerUser: RequestHandler = async (req: CreateUserStreamer, res) => {
@@ -32,7 +34,7 @@ export const createStreamerUser: RequestHandler = async (req: CreateUserStreamer
     const token = generateToken()
     sendVerificationMailuserStreamer(token, {name, email, userStreamerId:userstreamer._id.toString()})
     //send verification email
-    res.status(201).json({ userviwer: userstreamer._id, name, email })
+    res.status(201).json({ userstreamer: userstreamer._id, name, email })
 }
 
 
@@ -118,5 +120,29 @@ export const sendReVerificationTokenStreamer: RequestHandler = async (req, res) 
     res.json({ message: "Please check your mail!" });
 }
 
+export const generateForgetPasswordLink: RequestHandler = async (req, res) => {
+    const { email } = req.body;
 
+    // Tenta encontrar o usuário em ambos os modelos, sem distinguir o tipo
+    let user = await userViewer.findOne({ email });
+    if (!user) {
+        user = await userStreamer.findOne({ email });
+    }
 
+    if (!user) {
+        return res.status(404).json({ error: "Account not found!" });
+    }
+
+    // Gerar o link
+    const token = crypto.randomBytes(36).toString('hex');
+
+    await passwordResetToken.findOneAndDelete({ owner: user._id });
+
+    await passwordResetToken.create({ owner: user._id, token });
+
+    const resetLink = `${PASSWORD_RESET_LINK}?token=${token}&userId=${user._id}`;
+
+    sendForgetPasswordLink({ email: user.email, link: resetLink });
+
+    res.json({ message: "Check your registered mail" });
+}
