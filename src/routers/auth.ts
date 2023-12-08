@@ -2,8 +2,8 @@ import userViewer from '#/models/userViewer'
 import userStreamer from '#/models/userStreamer'
 import { Router } from 'express'
 import { validate } from '#/middleware/validator'
-import { CreateUserStreamerSchema, CreateUserViewerSchema, EmailVerificationBody as TokenAndIDValidation } from '#/utils/validationSchema'
-import { createStreamerUser, createViewerUser, generateForgetPasswordLink, grantValid, sendReVerificationTokenStreamer, sendReVerificationTokenViewer, verifyEmail } from '#/controllers/users'
+import { CreateUserStreamerSchema, CreateUserViewerSchema, EmailVerificationBody as TokenAndIDValidation, updatePasswordSchema } from '#/utils/validationSchema'
+import { createStreamerUser, createViewerUser, generateForgetPasswordLink, grantValid, sendReVerificationTokenStreamer, sendReVerificationTokenViewer, updateStreamerPassword, updateViewerPassword, verifyEmail } from '#/controllers/users'
 import { isValidPassResetToken } from '#/middleware/auth'
 
 const router = Router()
@@ -23,6 +23,7 @@ router.post("/re-verify-Viewer-email", sendReVerificationTokenViewer)
 router.post("/re-verify-Streamer-email", sendReVerificationTokenStreamer)
 router.post("/forget-password", generateForgetPasswordLink)
 router.post("/verify-pass-reset-token", validate(TokenAndIDValidation), isValidPassResetToken, grantValid)
+router.post('/update-password', validate(updatePasswordSchema), isValidPassResetToken, updateViewerPassword, updateStreamerPassword)
 
 
 export default router
