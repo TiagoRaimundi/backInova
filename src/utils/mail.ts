@@ -118,7 +118,7 @@ export const sendForgetPasswordLink = async (options: Options) => {
     const { email, link} = options
 
     
-      const message = "We just received a request that you forgot your password. No problem you can use the link below and create brand new password."
+      const message = "Acabamos de receber uma solicitação informando que você esqueceu sua senha. Não tem problema, você pode usar o link abaixo e criar uma nova senha."
       transport.sendMail({
 
         to: email,
@@ -140,7 +140,7 @@ export const sendForgetPasswordLink = async (options: Options) => {
             },
             {
                 filename: "forget_password.png",
-                path: path.join(__dirname, "../mail/welcome.png"),
+                path: path.join(__dirname, "../mail/forgot_password.png"),
                 cid: "forget_password"
             }
         ]
@@ -151,7 +151,7 @@ export const  sendPassResetSuccessEmail = async (name: string, email: string) =>
     const transport = generateMailTransporter()
     
     
-      const message = "We just received a request that you forgot your password. No problem you can use the link below and create brand new password."
+      const message = "Sua nova senha foi salva com sucesso."
       transport.sendMail({
 
         to: email,
@@ -173,7 +173,7 @@ export const  sendPassResetSuccessEmail = async (name: string, email: string) =>
             },
             {
                 filename: "forget_password.png",
-                path: path.join(__dirname, "../mail/welcome.png"),
+                path: path.join(__dirname, "../mail/forgot_password.png"),
                 cid: "forget_password"
             }
         ]
