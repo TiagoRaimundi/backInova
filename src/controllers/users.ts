@@ -2,10 +2,11 @@ import { CreateUserStreamer, CreateUserViewer, VerifyViewerEmailRequest } from "
 import userStreamer from "#/models/userStreamer"
 import nodemailer from 'nodemailer'
 import path from 'path'
+import jwt from 'jsonwebtoken'
 import userViewer from "#/models/userViewer"
 import { CreateUserStreamerSchema, CreateUserViewerSchema } from "#/utils/validationSchema"
 import { RequestHandler } from "express"
-import { GOOGLE_USER, GOOGLE_PASS, PASSWORD_RESET_LINK } from "#/utils/variables"
+import { GOOGLE_USER, GOOGLE_PASS, PASSWORD_RESET_LINK, JWT_SECRET } from "#/utils/variables"
 import { generateToken } from "#/utils/helpers"
 import EmailVerificationToken from "#/models/emailVerificationToken"
 import { generateTemplate } from "#/mail/template"
@@ -188,5 +189,69 @@ export const updateViewerPassword: RequestHandler = async (req, res) => {
 
     sendPassResetSuccessEmail(user.name, user.email)
     res.json({message: "Password resets successfully."})
+
+}
+
+export const signInViewer: RequestHandler = async (req, res) => {
+    const { password, email } = req.body
+
+    const user = await userViewer.findOne({
+        email
+    })
+    if (!user) return res.status(403).json({ error: "Email/Password mismatch!" })
+
+    //compare the password
+    const matched = await user.comparePassword(password)
+    if (!matched) return res.status(403).json({ error: "Email/Password mismatch!" })
+    //generate the token for later use.
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET)
+    user.tokens.push(token)
+
+    await user.save()
+
+    res.json({ 
+        profile: { 
+            id: user._id, 
+            name: user.name, 
+            email: user.email, 
+            verified: user.verified, 
+            avatar: user.profilePicture?.url, 
+            followers: user.followers.length, 
+            followings: user.followings.length 
+        },
+        token
+    })
+
+}
+
+export const signInStreamer: RequestHandler = async (req, res) => {
+    const { password, email } = req.body
+
+    const user = await userStreamer.findOne({
+        email
+    })
+    if (!user) return res.status(403).json({ error: "Email/Password mismatch!" })
+
+    //compare the password
+    const matched = await user.comparePassword(password)
+    if (!matched) return res.status(403).json({ error: "Email/Password mismatch!" })
+    //generate the token for later use.
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET)
+    user.tokens.push(token)
+
+    await user.save()
+
+    res.json({ 
+        profile: { 
+            id: user._id, 
+            name: user.name, 
+            email: user.email, 
+            verified: user.verified, 
+            avatar: user.profilePicture?.url, 
+            followers: user.followers.length, 
+            followings: user.followings.length 
+        },
+        token
+    })
 
 }
