@@ -1,12 +1,9 @@
-import userViewer from '#/models/userViewer'
-import userStreamer from '#/models/userStreamer'
+
 import { Router } from 'express'
 import { validate } from '#/middleware/validator'
 import { CreateUserStreamerSchema, CreateUserViewerSchema, SignInValidationSchema, EmailVerificationBody as TokenAndIDValidation, updatePasswordSchema } from '#/utils/validationSchema'
 import { createStreamerUser, createViewerUser, generateForgetPasswordLink, grantValid, sendReVerificationTokenStreamer, sendReVerificationTokenViewer, signInStreamer, signInViewer, updateStreamerPassword, updateViewerPassword, verifyEmail } from '#/controllers/users'
 import { isValidPassResetToken, mustAuthStreamer, mustAuthViewer } from '#/middleware/auth'
-import { JwtPayload, verify } from 'jsonwebtoken'
-import { JWT_SECRET } from '#/utils/variables'
 
 const router = Router()
 router.post(
@@ -45,21 +42,28 @@ router.get('/is-auth-userStreamer', mustAuthStreamer, (req, res) => {
         profile: req.user,
 
     })
-}
-)
-router.get('/public', (req, res) => {
-    res.json({
-        message: "You are in public route."
+})
 
+import formidable from 'formidable'
+
+router.post('/update-profile', (req, res) => {
+
+    if(!req.headers['content-type']?.startsWith("multipart/form-data"))
+        return res.status(422).json({error: "Only accepts form-data"})
+
+
+    //handle the file upload
+    const form = formidable()
+    form.parse(req, (err, fields, files) => {
+        console.log("fields: ", fields)
+        console.log("files: ", files)
+
+        res.json({ uploaded: true})
     })
 })
 
-router.get('/private', mustAuthViewer, mustAuthStreamer, (req, res) => {
-    res.json({
-        message: "You are in private route."
 
-    })
-})
+
 
 
 
