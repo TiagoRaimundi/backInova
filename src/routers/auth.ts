@@ -47,6 +47,19 @@ router.get('/is-auth-userStreamer', mustAuthStreamer, (req, res) => {
     })
 }
 )
+router.get('/public', (req, res) => {
+    res.json({
+        message: "You are in public route."
+
+    })
+})
+
+router.get('/private', mustAuthViewer, mustAuthStreamer, (req, res) => {
+    res.json({
+        message: "You are in private route."
+
+    })
+})
 
 
 
