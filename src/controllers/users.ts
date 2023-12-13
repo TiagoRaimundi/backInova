@@ -28,10 +28,10 @@ export const createViewerUser: RequestHandler = async (req: CreateUserViewer, re
 }
 
 export const createStreamerUser: RequestHandler = async (req: CreateUserStreamer, res) => {
-    const { email, password, name, cpf, phoneNumber, address } = req.body
-    CreateUserStreamerSchema.validate({ email, password, name, cpf, phoneNumber, address }).catch(error => {
+    const { email, password, name } = req.body
+    CreateUserStreamerSchema.validate({ email, password, name }).catch(error => {
     })
-    const userstreamer = await userStreamer.create({ name, email, password, cpf, phoneNumber, address})
+    const userstreamer = await userStreamer.create({ name, email, password})
     const token = generateToken()
     sendVerificationMailuserStreamer(token, {name, email, userStreamerId:userstreamer._id.toString()})
     //send verification email

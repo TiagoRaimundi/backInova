@@ -46,12 +46,12 @@ export const CreateUserStreamerSchema = yup.object().shape({
     cpf: yup
     .string()
     .trim()
-    .required("CPF number is required")
+    //.required("CPF number is required")
     .matches(CPF_REGEX, "Invalid CPF format"),
     phoneNumber: yup
     .string()
     .trim()
-    .required("Cellphone number is required")
+    //.required("Cellphone number is required")
     .matches(CELLPHONE_REGEX, "Invalid cellphone number format")
     
 

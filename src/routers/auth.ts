@@ -4,7 +4,7 @@ import { Router } from 'express'
 import { validate } from '#/middleware/validator'
 import { CreateUserStreamerSchema, CreateUserViewerSchema, SignInValidationSchema, EmailVerificationBody as TokenAndIDValidation, updatePasswordSchema } from '#/utils/validationSchema'
 import { createStreamerUser, createViewerUser, generateForgetPasswordLink, grantValid, sendReVerificationTokenStreamer, sendReVerificationTokenViewer, signInStreamer, signInViewer, updateStreamerPassword, updateViewerPassword, verifyEmail } from '#/controllers/users'
-import { isValidPassResetToken } from '#/middleware/auth'
+import { isValidPassResetToken, mustAuthStreamer, mustAuthViewer } from '#/middleware/auth'
 import { JwtPayload, verify } from 'jsonwebtoken'
 import { JWT_SECRET } from '#/utils/variables'
 
@@ -31,58 +31,22 @@ router.post('/sign-in',
  signInViewer, signInStreamer)
 
 
- router.get('/is-auth-UserViewer', async (req, res) => {
-    const {authorization} = (req.headers)
-    const token = authorization?.split("Bearer ")[1]
-    if(!token) res.status(403).json({error: "Unauthorized request!" })
-
-    const payload = verify(token, JWT_SECRET) as JwtPayload
-    const id = payload.userId
-
-    const userviewer = await userViewer.findById(id)
-    const userstreamer = await userViewer.findById(id)
-    if(!userviewer) return res.status(403).json({error: "Unauthorized request!"})
-
+ router.get('/is-auth-userViewer', mustAuthViewer, (req, res) => {
     res.json({
-        profile: { 
-            id: userviewer._id, 
-            name: userviewer.name, 
-            email: userviewer.email, 
-            verified: userviewer.verified, 
-            avatar: userviewer.profilePicture?.url, 
-            followers: userviewer.followers.length, 
-            followings: userviewer.followings.length 
-        },
-        token
+        profile: req.user,
+
     })
-})
-
-router.get('/is-auth-UserStreamer', async (req, res) => {
-    const {authorization} = (req.headers)
-    const token = authorization?.split("Bearer ")[1]
-    if(!token) res.status(403).json({error: "Unauthorized request!" })
-
-    const payload = verify(token, JWT_SECRET) as JwtPayload
-    const id = payload.userId
+}
+)
 
 
-    const userstreamer = await userStreamer.findById(id)
-    if(!userstreamer) return res.status(403).json({error: "Unauthorized request!"})
-
+router.get('/is-auth-userStreamer', mustAuthStreamer, (req, res) => {
     res.json({
-        profile: { 
-            id: userstreamer._id, 
-            name: userstreamer.name, 
-            email: userstreamer.email, 
-            verified: userstreamer.verified, 
-            avatar: userstreamer.profilePicture?.url, 
-            followers: userstreamer.followers.length, 
-            followings: userstreamer.followings.length 
-        },
+        profile: req.user,
+
     })
-})
-
-
+}
+)
 
 
 

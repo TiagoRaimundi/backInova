@@ -73,11 +73,11 @@ const userStreamerSchema = new Schema<UserStreamer,{}, Methods>({
         ref: "Product"
     }],
     address: {
-        street: { type: String, required: true},
-        city: { type: String, required: true },
-        state: { type: String, required: true },
-        country: { type: String, required: true },
-        cep: { type: String, required: true }
+        street: { type: String, required: false},
+        city: { type: String, required: false },
+        state: { type: String, required: false },
+        country: { type: String, required: false },
+        cep: { type: String, required: false }
     },
     profilePicture: {
         type: Object,
@@ -106,12 +106,12 @@ const userStreamerSchema = new Schema<UserStreamer,{}, Methods>({
     tokens: [String],
     cpf: {
         type: String,
-        required: true,
+        required: false, ////////////rever
         unique: true
     },
     phoneNumber: {
         type: String,
-        required: true,
+        required: false, ////////////rever
         unique: true
     },
     liveToken: {
