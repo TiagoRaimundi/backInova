@@ -4,7 +4,7 @@ import { validate } from '#/middleware/validator'
 import { CreateUserStreamerSchema, CreateUserViewerSchema, SignInValidationSchema, EmailVerificationBody as TokenAndIDValidation, updatePasswordSchema } from '#/utils/validationSchema'
 import { createStreamerUser, createViewerUser, generateForgetPasswordLink, grantValid, sendReVerificationTokenStreamer, sendReVerificationTokenViewer, signInStreamer, signInViewer, updateStreamerPassword, updateViewerPassword, verifyEmail } from '#/controllers/users'
 import { isValidPassResetToken, mustAuthStreamer, mustAuthViewer } from '#/middleware/auth'
-
+import fileParser, { RequestWithFiles } from '#/middleware/fileParser'
 const router = Router()
 router.post(
     "/createViewerUser",
@@ -33,8 +33,7 @@ router.post('/sign-in',
         profile: req.user,
 
     })
-}
-)
+})
 
 
 router.get('/is-auth-userStreamer', mustAuthStreamer, (req, res) => {
@@ -44,22 +43,10 @@ router.get('/is-auth-userStreamer', mustAuthStreamer, (req, res) => {
     })
 })
 
-import formidable from 'formidable'
 
-router.post('/update-profile', (req, res) => {
-
-    if(!req.headers['content-type']?.startsWith("multipart/form-data"))
-        return res.status(422).json({error: "Only accepts form-data"})
-
-
-    //handle the file upload
-    const form = formidable()
-    form.parse(req, (err, fields, files) => {
-        console.log("fields: ", fields)
-        console.log("files: ", files)
-
-        res.json({ uploaded: true})
-    })
+router.post('/update-profile', fileParser, (req: RequestWithFiles, res) =>{
+    console.log(req.files)
+    res.json({ok: true})
 })
 
 
