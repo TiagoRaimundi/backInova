@@ -51,8 +51,4 @@ router.post('/update-profile', fileParser, (req: RequestWithFiles, res) =>{
 
 
 
-
-
-
-
 export default router
